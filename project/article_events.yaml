@@ -1,0 +1,57 @@
+asyncapi: 2.0.0
+info:
+  title: Articles Service
+  version: 0.0.1
+  description: This service is in charge to handle articles 
+  contact:
+    name: Sensedia
+    url: https://sensedia.com
+servers:
+  production:
+    url: https://event-receiver.sensedia.com/event-receiver/511b1529/aller-holdings
+    protocol: http
+channels:
+  article/created:
+    subscribe:
+      message:
+        $ref: '#/components/messages/ArticleCreated'
+components:
+  messages:
+    ArticleCreated:
+      payload:
+        type: object
+        properties:
+          id: 
+            type: string
+            description: The unique identification of an article
+          title:
+            type: string
+            description: Name of the article
+          type:
+            enum:
+              - HEALTH
+              - SPORTS
+              - POLITICS
+            description: Type of the article that was created
+          summary:
+            type: string
+            description: a little summary of the article
+          price:
+            type: number
+            description: The base price of the article
+            example: 10.00
+          date:
+            type: string
+            format: datetime
+            description: The date of the article
+          author:
+            type: string
+            description: The author or authors of the article
+        required:
+          - id
+          - title
+          - type
+          - summary
+          - price
+          - date
+          - author

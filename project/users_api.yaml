@@ -1,0 +1,262 @@
+swagger: '2.0'
+info:
+  description: This service is in charge to handle users operations 
+  version: 0.0.1
+  title: Users Service
+host: manager-demov3.sensedia.com
+basePath: /users-service/
+tags:
+  - name: Users
+    description: Users Domain
+schemes:
+  - https
+  - http
+paths:
+  /v1/users:
+    post:
+      summary: Creates a new User
+      tags:
+        - Users
+      parameters:
+        - in: "header"
+          name: "client_id"
+          description: client id that identify the consumer
+          required: true
+          type: "string"
+        - in: header
+          name: access_token
+          description: access token
+          required: true
+          type: string
+        - name: "PostUser"
+          in: "body"
+          required: true
+          schema:
+            $ref: '#/definitions/PostUser'
+      responses:
+        '201':
+          description: Created.
+        '400':
+          description: Bad Request.
+        '401':
+          description: "Authentication error"
+        '403':
+          description: "Authorization error"
+        '404':
+          description: "Resource not found"
+        '422':
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/_businessErrorMessage'
+        '500':
+          description: "Internal server error"
+        '503':
+          description: "Unavailable server error"
+        '504':
+          description: "Max server limmit reached"
+  /v1/{userId}/users:          
+    get:
+      tags:
+        - Users
+      summary: Get a user By Id
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: client_id
+          in: header
+          description: Client id.
+          required: true
+          type: string
+        - name: access_token
+          in: header
+          description: Access token.
+          required: true
+          type: string
+        - name: userId
+          in: path
+          required: true
+          type: string
+          description: Id of the User
+      responses:
+        '200':
+          description: 'OK'
+          schema:
+            $ref: '#/definitions/GetUser'
+    
+        '400':
+          description: Bad Request.
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Forbidden.
+        '412':
+          description: Pre-condition Failed.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/_businessErrorMessage'
+        '422':
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/_businessErrorMessage'
+        '500':
+          description: Internal Server Error.    
+    put:
+      tags:
+        - Users
+      summary: Change a existing user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: client_id
+          in: header
+          description: Client id.
+          required: true
+          type: string
+        - name: access_token
+          in: header
+          description: Access token.
+          required: true
+          type: string
+        - name: userId
+          in: path
+          required: true
+          type: string
+          description: Conta do cliente
+        - name: invoiceCustomerRequest
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PostUser'
+      responses:
+        '204':
+          description: No Content.
+        '400':
+          description: Bad Request.
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Forbidden.
+        '412':
+          description: Pre-condition Failed.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/_businessErrorMessage'
+        '422':
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/_businessErrorMessage'
+        '500':
+          description: Internal Server Error.    
+    delete:
+      tags:
+        - Users
+      summary: Inativate a User
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: client_id
+          in: header
+          description: Client id.
+          required: true
+          type: string
+        - name: access_token
+          in: header
+          description: Access token.
+          required: true
+          type: string
+        - name: userId
+          in: path
+          required: true
+          type: string
+          description: Id of the User
+      responses:
+        '202':
+          description: Accepted.
+        '400':
+          description: Bad Request.
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Forbidden.
+        '422':
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/_businessErrorMessage'
+        '500':
+          description: Internal Server Error.
+definitions:
+  _businessErrorMessage:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Error code.
+      message:
+        type: string
+        description: Error message.
+        
+  PostUser:
+    type: object
+    properties:
+      fullName:
+        type: string
+        description: User full name
+      document:
+        type: string
+        description: Oficial document of the user
+      email:
+        type: string
+        description: Email of the user
+      phoneNumber:
+        type: string
+        description: Phone number of the user
+      active:
+        type: boolean
+        description: identify is the user is active or not
+      preferences:
+        type: array
+        items:
+          type: string
+        description: The type of articles that a user wants to receive
+    required: 
+      - fullName
+      - document
+      - email
+      - phoneNumber
+      - active
+      - preferences
+      
+  GetUser: 
+    type: object
+    properties:
+      id:
+        type: string
+        description: User ID
+      fullName:
+        type: string
+        description: User full name
+      document:
+        type: string
+        description: Oficial document of the user
+      email:
+        type: string
+        description: Email of the user
+      phoneNumber:
+        type: string
+        description: Phone number of the user
+      active:
+        type: boolean
+        description: identify is the user is active or not
+      preferences:
+        type: array
+        items:
+          type: string
+        description: The type of articles that a user wants to receive 
